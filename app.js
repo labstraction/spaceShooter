@@ -10,6 +10,7 @@ let animate;
 const player = new Player(canvasWidth / 2, canvasHeight / 2, 50, 50);
 let allEnemies = [];
 let enemyCooldown = 120;
+let minibossCoolDown = 200;
 let playerProjectiles = player.projectiles;
 
 const gameOver = document.getElementById("game-over");
@@ -19,6 +20,9 @@ const hpBar = document.getElementById("hp-bar");
 let hpWidth = 100 / player.healthPoints;
 
 const scoreText = document.getElementById("score-text");
+minibossProjectiles = []
+
+let state = "Play";
 
 gameOverBtn.addEventListener("click", () => {
     player.healthPoints = 3;
@@ -37,8 +41,8 @@ function animation() {
     // canvasHeight = window.innerHeight;
     // canvas.width = canvasWidth;
     // canvas.height = canvasHeight;
-
-    if (player.healthPoints > 0) {
+    gameStates();
+    if (state === "Play") {
         if (player) {
             player.draw(ctx);
             player.control(canvasWidth, canvasHeight);
@@ -50,12 +54,15 @@ function animation() {
             enemySpawn();
             enemyCooldown = 120;
         }
-
+        minibossSpawn();
         allEnemies = allEnemies.filter((e) => e.isAlive);
         for (let i = 0; i < allEnemies.length; i++) {
             const enemy = allEnemies[i];
             enemy.draw(ctx);
             enemy.move(canvasHeight);
+            if (enemy.projectiles) {
+                minibossProjectiles.push(enemy.projectiles);
+            }
         }
 
         enemyCollision();
@@ -63,7 +70,7 @@ function animation() {
         scoreText.innerText = "Score : " + player.score;
         hpBar.style.width = hpWidth * player.healthPoints + "%";
 
-    } else {
+    } else if (state === "GameOver") {
         gameOver.style.display = "flex";
     }
 }
@@ -74,8 +81,21 @@ function enemySpawn() {
     allEnemies.push(enemy);
 }
 
+function minibossSpawn() {
+    minibossCoolDown--;
+    if (minibossCoolDown <= 0) {
+        let xPos = Math.random() < 0.5 ? 0 - 128 : canvasWidth;
+        let miniboss = new Miniboss(xPos, 120, 128, 84);
+        miniboss.score = 1000;
+        miniboss.speed = xPos < 0.5 ? 2 : -2;
+        allEnemies.push(miniboss);
+        minibossCoolDown = 200;
+    }
+}
+
 function enemyCollision() {
     let playerAssets = [player, ...playerProjectiles];
+    let enemyAssets = [...allEnemies, ...minibossProjectiles];
     for (let i = 0; i < playerAssets.length; i++) {
         const pA = playerAssets[i];
         for (let j = 0; j < allEnemies.length; j++) {
@@ -95,6 +115,24 @@ function enemyCollision() {
                 }
             }
         }
+    }
+}
+
+function gameStates() {
+    switch (state) {
+        case "Play":
+            if (player.healthPoints <= 0) {
+                state = "GameOver";
+            }
+        break;
+        case "GameOver":
+            if (player.healthPoints > 0) {
+                state = "Play";
+            }
+        break;
+    
+        default:
+            break;
     }
 }
 
