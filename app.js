@@ -20,26 +20,31 @@ function animation() {
     // canvas.width = canvasWidth;
     // canvas.height = canvasHeight;
 
-    if (player) {
-        player.draw(ctx);
-        player.control(canvasWidth, canvasHeight);
-        playerProjectiles = player.projectiles;
+    if(player.healthPoints > 0){
+        
+        if (player) {
+            player.draw(ctx);
+            player.control(canvasWidth, canvasHeight);
+            playerProjectiles = player.projectiles;
+        }
+    
+        enemyCooldown--;
+        if (enemyCooldown <= 0) {
+            enemySpawn();
+            enemyCooldown = 120;
+        }
+    
+        allEnemies = allEnemies.filter(e => e.isAlive);
+        for (let i = 0; i < allEnemies.length; i++) {
+            const enemy = allEnemies[i];
+            enemy.draw(ctx);
+            enemy.move(canvasHeight);
+        }
+    
+        enemyCollision();
     }
 
-    enemyCooldown--;
-    if (enemyCooldown <= 0) {
-        enemySpawn();
-        enemyCooldown = 120;
-    }
-
-    allEnemies = allEnemies.filter(e => e.isAlive);
-    for (let i = 0; i < allEnemies.length; i++) {
-        const enemy = allEnemies[i];
-        enemy.draw(ctx);
-        enemy.move(canvasHeight);
-    }
-
-    enemyCollision();
+   
 }
 
 function enemySpawn() {
@@ -61,6 +66,8 @@ function enemyCollision(){
                 enemy.y + enemy.height > pA.y
             ) {
                 console.log("collision");
+                enemy.healthPoints--;
+                pA.healthPoints--;
             }
         }
     }
