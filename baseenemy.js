@@ -4,6 +4,7 @@ class BaseEnemy extends GameObject{
         this.speed = 3;
         this.isAlive = true;
         this.healthPoints = 1;
+        this.score = 100;
     }
 
     draw(ctx){
