@@ -8,7 +8,7 @@ class BaseEnemy extends GameObject{
 
     draw(ctx){
         super.draw(ctx);
-        this.death();
+        // this.death();
     }
 
     move(canvasHeight){

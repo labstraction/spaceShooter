@@ -21,7 +21,7 @@ function animation() {
     // canvas.height = canvasHeight;
 
     if(player.healthPoints > 0){
-        
+
         if (player) {
             player.draw(ctx);
             player.control(canvasWidth, canvasHeight);
@@ -65,9 +65,10 @@ function enemyCollision(){
                 enemy.y< pA.y + pA.height &&
                 enemy.y + enemy.height > pA.y
             ) {
-                console.log("collision");
+                // console.log("collision");
                 enemy.healthPoints--;
                 pA.healthPoints--;
+                enemy.death();
             }
         }
     }

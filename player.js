@@ -17,6 +17,7 @@ class Player extends GameObject {
             proj.draw(ctx);
             proj.move();
         }
+        console.log(this.healthPoints);
     }
 
     control(canvasWidth, canvasHeight) {
@@ -73,4 +74,5 @@ class Player extends GameObject {
            
         }
     }
+
 }
