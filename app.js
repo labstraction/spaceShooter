@@ -26,6 +26,8 @@ gameOverBtn.addEventListener("click", () => {
     allEnemies = [];
     gameOver.style.display = "none";
     player.score = 0;
+    player.x = canvasWidth / 2;
+    player.y = canvasHeight / 2
 });
 
 function animation() {
